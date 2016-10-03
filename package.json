@@ -16,7 +16,7 @@
     "Engine"
   ],
   "dependencies": {
-
+    "socket.io": "*"
   },
   "author": "ravernkohdev",
   "license": "MIT",
