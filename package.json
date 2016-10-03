@@ -8,13 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ravernkohdev/talon.git"
+    "url": "git+https://github.com/ravernkohdev/talonengine.git"
   },
   "keywords": [
     "Talon",
     "Game",
     "Engine"
   ],
+  "dependencies": {
+
+  },
   "author": "ravernkohdev",
   "license": "MIT",
   "bugs": {
