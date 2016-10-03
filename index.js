@@ -1,5 +1,7 @@
+// index.js
+// 3 October 2016 9:30pm
+// Ravern Koh
+// access point for Talon Engine
 'use strict'
 
-module.exports = function() {
-  console.log('Hello')
-}
+module.exports = require('./build/talon.js')
