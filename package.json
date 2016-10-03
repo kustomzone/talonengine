@@ -1,5 +1,5 @@
 {
-  "name": "talon",
+  "name": "talonengine",
   "version": "0.0.1",
   "description": "Talon Game Engine with Networking using SVG HTML5",
   "main": "index.js",
