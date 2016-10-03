@@ -1,0 +1,24 @@
+{
+  "name": "talon",
+  "version": "0.0.1",
+  "description": "Talon Game Engine with Networking using SVG HTML5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravernkohdev/talon.git"
+  },
+  "keywords": [
+    "Talon",
+    "Game",
+    "Engine"
+  ],
+  "author": "ravernkohdev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ravernkohdev/talon/issues"
+  },
+  "homepage": "https://github.com/ravernkohdev/talon#readme"
+}
