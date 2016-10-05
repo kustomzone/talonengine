@@ -28,11 +28,35 @@ Server = function(params) {
   server = params.server
   sio = params.sio
 
+  // Load game logic from script
+  Server.loadScript()
+
+  // Begin networking
+  Server.listen()
+
   // Return the Server instance
   return Server
 }
 
-Server.loadScripts = function() {
+Server.loadScript = function() {
+
+  // Load script via require
+  require.main.require('./' + config.script)
+
+  // Return the Server instance
+  return Server
+}
+
+Server.listen = function() {
+
+  /*
+    Networking code
+  */
+
+  // Set event listeners on connection
+  sio.sockets.on('connected', function(socket) {
+
+  })
 
   // Return the Server instance
   return Server
