@@ -4,4 +4,4 @@
 // access point for Talon Engine
 'use strict'
 
-module.exports = require('./src/talon.js')
+module.exports = require('./server/talon.server.js')
