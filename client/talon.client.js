@@ -12,19 +12,20 @@ var Talon = {}
 /*
   Attributes declaration
 */
-var socket = io.connect()
+var _socket = io.connect()
+var _scenes = {}
 
 /*
   Socket events declarations
 */
-socket.on('start', function() {
+_socket.on('start', function() {
   // Talon._start()
 })
 
 /*
-  Construct method declarations
+  Construct function declarations
 */
-Talon.Scene = function(Scene) {
+Talon.Scene = function(Scene, id) {
   var scene = {
     _present: function() {
 
@@ -35,6 +36,21 @@ Talon.Scene = function(Scene) {
   }
   Scene.call(scene)
 
-  // Return the Talon
+  // Add this scene to the main object
+  if (id == undefined) id = Talon._uuid(scenes)
+  _scenes[id] = scene
+
+  // Return the Talon instance
   return Talon
+}
+
+/*
+  Utility functions
+*/
+
+// Unique ID generation
+Talon._uuid = function(dict) {
+  var uuid
+  while (dict[(uuid = Math.random())] != undefined) {}
+  return uuid
 }

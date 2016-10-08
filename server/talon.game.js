@@ -10,9 +10,34 @@
 
 // Overall classes
 var Talon = {}
+var server = true
 
-Talon.Scene = function() {
-  console.log('Working')
+// Main objects
+var _scenes = {}
+
+/*
+  Main function declarations
+*/
+Talon.Scene = function(_, id) {
+  var scene = {}
+
+  // Add this scene to the main object
+  if (id == undefined) id = Talon._uuid(_scenes)
+  _scenes[id] = scene
+
+  // Return the Talon instance
+  return Talon
+}
+
+/*
+  Utility functions
+*/
+
+// Unique ID generation
+Talon._uuid = function(dict) {
+  var uuid
+  while (dict[(uuid = Math.random())] != undefined) {}
+  return uuid
 }
 
 module.exports = Talon
