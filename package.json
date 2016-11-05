@@ -1,6 +1,6 @@
 {
   "name": "talonengine",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Talon Game Engine with Networking using SVG HTML5",
   "main": "index.js",
   "scripts": {},
@@ -14,8 +14,7 @@
     "Engine"
   ],
   "dependencies": {
-    "socket.io": "*",
-    "svg.js": "^2.3.4"
+
   },
   "author": "ravernkohdev",
   "license": "MIT",
