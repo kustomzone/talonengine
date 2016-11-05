@@ -52,5 +52,7 @@ module.exports = Talon
 
 // Overriding Talon start function
 Talon.start = function() {
-  Talon.Scene()
+  Talon.Scene(function(Scene) {
+    console.log(Scene)
+  })
 }
