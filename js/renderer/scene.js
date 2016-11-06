@@ -4,17 +4,25 @@
 // Talon.Scene
 'use strict'
 
-// Main Scene function
-let Scene = (init) => {
-  // Scene pseudo-prototype
-  let defaultScene = {
-    _present: () => {
-      if (this.present != undefined) this.present()
-    }
-  }
+// Importing entity files
+const Entity = require('./entity.js')
 
-  // Call initialize, with 'this' as 'defaultScene'
-  init.call(defaultScene)
+// Global scenes array
+const scenes = {}
+
+// Default scene object
+const defaultScene = {
+  _entities: {},
+  add: function(name, entity) {
+    this._entities[name] = entity
+  }
+}
+
+// Main Scene function
+const Scene = function(name, setupFunction) {
+  let newScene = Object.create(defaultScene)
+  setupFunction.call(newScene)
+  scenes[name] = newScene
 }
 
 // Export the Scene module

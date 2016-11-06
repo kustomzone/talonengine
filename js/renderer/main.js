@@ -6,6 +6,7 @@
 
 // Requiring essentials
 const {app, ipcRenderer} = require('electron')
+const path = require('path')
 
 
 // Global Talon object
@@ -13,9 +14,15 @@ const Talon = {}
 module.exports = Talon
 
 
-// Init code
+// Init code, loading '_options'/configuration
 Talon._options = ipcRenderer.sendSync('start')
 
 
 // Requiring Talon submodules
+Talon.Component = require('./component.js')
+Talon.Entity = require('./entity.js')
 Talon.Scene = require('./scene.js')
+
+
+// Requiring main user file
+require(Talon._options.realScript)

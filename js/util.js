@@ -1,4 +1,4 @@
-module.exports.merge = (_default, _custom) => {
+module.exports.merge = function(_default, _custom) {
   let _new = _default
   for (key in _default) {
     if (_custom[key] != undefined) {

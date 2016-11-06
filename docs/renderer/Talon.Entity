@@ -1,0 +1,8 @@
+Doc for Talon.Entity object
+
+VARS
+name -> unique id used to identify each scene
+
+FUNCTIONS
+Constructor(name, init) -> interface for entity creation, 'name' is given by user, 'init' is for user logic
+update() -> called every update by scene

@@ -1,7 +1,14 @@
 Doc for Talon.Scene object
 
 VARS
-id -> unique id used to identify each scene
+name -> unique id used to identify each scene
 
 FUNCTIONS
-Constructor(init) -> interface for scene creation
+Constructor(name, rootInit) -> interface for scene creation, 'name' is given by user, 'rootInit' is for root Entity creation
+Doc for Talon.Scene object
+
+VARS
+name -> unique id used to identify each scene
+
+FUNCTIONS
+Constructor(name, rootInit) -> interface for scene creation, 'name' is given by user, 'rootInit' is for root Entity creation
