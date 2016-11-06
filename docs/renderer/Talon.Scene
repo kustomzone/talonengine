@@ -1,0 +1,7 @@
+Doc for Talon.Scene object
+
+VARS
+id -> unique id used to identify each scene
+
+FUNCTIONS
+Constructor(init) -> interface for scene creation

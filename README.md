@@ -1,2 +1,4 @@
 # Talon Game Engine
-built by Ravern Koh
+
+## Requirements
+- Electron installed.
