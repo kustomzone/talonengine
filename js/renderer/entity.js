@@ -6,21 +6,37 @@
 
 // Importing Component module
 const Component = require('./component.js')
+const util = require('../util.js')
 
 // Global entities array
 const entities = {}
 
 // Default Entity object
 const defaultEntity = {
+  // Unique id for each entity
+  _id: null,
+  // Entity-component paradigm
   _components: {},
   component: function(name) {
     return this._components[name]
+  },
+  // Parent-child paradigm
+  _parent: {},
+  _children: {},
+  add: function(name, id, setupFunction) {
+    let newChild = Entity._Instantiate(name, setupFunction)
+    this._children[id] = newChild
+    this._children[id]._id = id
+    this._children[id]._parent[this._id] = this
+  },
+  remove: function(id) {
+    _children[id] = undefined
   }
 }
 
 // Main Entity function
 const Entity = function(name, componentNames) {
-  let newEntity = Object.create(defaultEntity)
+  let newEntity = util.merge(defaultEntity, {})
   for (let i = 0; i < componentNames.length; i++) {
     newEntity._components[componentNames[i]] = Component._Instantiate(componentNames[i])
   }
@@ -28,11 +44,14 @@ const Entity = function(name, componentNames) {
   entities[name] = newEntity
 }
 
-Entity.Instantiate = function(name, setupFunction) {
-  let newEntity = Object.create(entities[name])
-  setupFunction(newEntity)
+Entity._Instantiate = function(name, setupFunction) {
+  let newEntity = util.merge(entities[name], {})
+  setupFunction.call(newEntity)
   return newEntity
 }
+
+// Setup built-in functionality\
+Entity('Root', [])
 
 // Export the Entity module
 module.exports = Entity

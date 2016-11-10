@@ -41,7 +41,7 @@ Talon._options = {
 
 Talon._createWindow = function(options) {
   // Creating window
-  Talon._window = new BrowserWindow({ width: options.width, height: options.width / options.aspect, resizable: options.resizable, 'web-preferences': { 'web-security': false } })
+  Talon._window = new BrowserWindow({ width: options.width, height: options.width / options.aspect, resizable: options.resizable })
   Talon._window.loadURL(url.format({
     pathname: path.join(__dirname, '../../html/main.html'),
     protocol: 'file:',
@@ -56,7 +56,7 @@ Talon._createWindow = function(options) {
     event.returnValue = Talon._options
   })
 
-  /* FOR DEBUG */ Talon._window.webContents.openDevTools()
+  /* FOR DEBUG */ // Talon._window.webContents.openDevTools()
 }
 
 Talon.start = function() {

@@ -2,13 +2,7 @@ Doc for Talon.Scene object
 
 VARS
 name -> unique id used to identify each scene
+_rootEntity -> root entity of the scene
 
 FUNCTIONS
-Constructor(name, rootInit) -> interface for scene creation, 'name' is given by user, 'rootInit' is for root Entity creation
-Doc for Talon.Scene object
-
-VARS
-name -> unique id used to identify each scene
-
-FUNCTIONS
-Constructor(name, rootInit) -> interface for scene creation, 'name' is given by user, 'rootInit' is for root Entity creation
+printHierachy() -> print the entity hierachy starting from root

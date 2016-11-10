@@ -1,8 +1,13 @@
 Doc for Talon.Entity object
 
 VARS
-name -> unique id used to identify each scene
+_id -> unique id used to identify each entity
+_components -> array of components
+_parent -> parent entity
+_children -> array of child entities
+
 
 FUNCTIONS
-Constructor(name, init) -> interface for entity creation, 'name' is given by user, 'init' is for user logic
-update() -> called every update by scene
+component(name) -> accessor for components
+add(name, id, setupFunction) -> adds a new child entity of class 'name' with unique 'id' and 'setupFunction'
+remove(id) -> removes a child entity of 'id'

@@ -1,0 +1,7 @@
+Doc for Talon.Component object
+
+VARS
+static -> array of static variables to be stored in Component class
+
+
+FUNCTIONS

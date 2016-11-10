@@ -12,7 +12,7 @@ const components = {}
 
 // Default Component object
 const defaultComponent = {
-
+  static: {}
 }
 
 // Main Component function
@@ -21,7 +21,9 @@ const Component = function(name, component) {
 }
 
 Component._Instantiate = function(name) {
-  return Object.create(components[name])
+  let newComponent = util.merge(components[name], {})
+  newComponent.static = components[name].static
+  return newComponent
 }
 
 // Export the Component module

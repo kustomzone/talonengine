@@ -1,1 +1,6 @@
 Doc for Talon object (Renderer process)
+
+FUNCTIONS
+Component(name, object) -> Create a component class with 'name', implementation in 'object'
+Entity(name, components) -> Define an entity class with 'name', and 'components'
+Scene(name, setupFunction) -> Defines a scene with 'name' and rootEntity with 'setupFunction'
