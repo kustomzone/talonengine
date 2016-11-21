@@ -12,7 +12,16 @@ const components = {}
 
 // Default Component object
 const defaultComponent = {
-  static: {}
+  static: {},
+  entity: null,
+  init: function() {},
+  update: function() {},
+  _init: function() {
+    if (this.init != undefined) this.init()
+  },
+  _update: function() {
+    if (this.update != undefined) this.update()
+  }
 }
 
 // Main Component function
@@ -22,7 +31,6 @@ const Component = function(name, component) {
 
 Component._Instantiate = function(name) {
   let newComponent = util.merge(components[name], {})
-  newComponent.static = components[name].static
   return newComponent
 }
 

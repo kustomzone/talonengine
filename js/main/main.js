@@ -56,7 +56,7 @@ Talon._createWindow = function(options) {
     event.returnValue = Talon._options
   })
 
-  /* FOR DEBUG */ // Talon._window.webContents.openDevTools()
+  /* FOR DEBUG */ Talon._window.webContents.openDevTools()
 }
 
 Talon.start = function() {

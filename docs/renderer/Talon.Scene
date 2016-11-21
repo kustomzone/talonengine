@@ -1,4 +1,4 @@
-Doc for Talon.Scene object
+Doc for Talon.Scene instance
 
 VARS
 name -> unique id used to identify each scene
@@ -6,3 +6,16 @@ _rootEntity -> root entity of the scene
 
 FUNCTIONS
 printHierachy() -> print the entity hierachy starting from root
+
+----------------------------------------------------------------
+
+Doc for Talon.Scene object
+
+VARS
+scenes -> global array of all scenes
+defaultScene -> prototype for all scenes
+
+FUNCTIONS
+Constructor(name, setupFunction) -> creates a scene 'name' with rootEntity off 'setupFunction'
+present(name) -> Present scene 'name'
+currentScene() -> returns the current scene being presented

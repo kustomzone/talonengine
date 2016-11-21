@@ -25,6 +25,7 @@ const defaultEntity = {
   _children: {},
   add: function(name, id, setupFunction) {
     let newChild = Entity._Instantiate(name, setupFunction)
+    // Assign the parent of the newChild
     this._children[id] = newChild
     this._children[id]._id = id
     this._children[id]._parent[this._id] = this
@@ -46,12 +47,23 @@ const Entity = function(name, componentNames) {
 
 Entity._Instantiate = function(name, setupFunction) {
   let newEntity = util.merge(entities[name], {})
+
+  for (key in newEntity._components) {
+    // Assign to 'entity' attribute of all components
+    newEntity._components[key].entity = newEntity
+    // Assign to 'static' attribute of all components
+    newEntity._components[key].static = entities[name]._components[key].static
+  }
+
   setupFunction.call(newEntity)
+
+  for (key in newEntity._components) {
+    // Call init function of all the components
+    newEntity._components[key]._init()
+  }
+
   return newEntity
 }
-
-// Setup built-in functionality\
-Entity('Root', [])
 
 // Export the Entity module
 module.exports = Entity

@@ -1,8 +1,11 @@
 # High Priority
 
-1. Change Talon.Scene setup function to that of root entity
 2. Update docs for Talon modules (Docs currently only for objects)
+3. Fix 'current Scene presenting'
 
 # Lower Priority
 
-1. Check if Component.static works
+# Completed
+
+Change Talon.Scene setup function to that of root entity (DONE)
+Check if Component.static works (DONE)
