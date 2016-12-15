@@ -6,14 +6,14 @@
 
 const Component = require('../component.js')
 
-Component('Root', {
+Component('__Root', {
   init: function() {
     setInterval(this._update.bind(this), 1000 / 60)
   },
   update: function() {
     const _update = function(entity) {
       for (key in entity._components) {
-        if (key != 'Root') entity._components[key]._update()
+        if (key != '__Root') entity._components[key]._update()
       }
       for (key in entity._children) {
         _update(entity._children[key])

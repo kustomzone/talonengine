@@ -1,6 +1,6 @@
 module.exports.merge = function(_default, _custom) {
   if (!_custom) _custom = {}
-  
+
   let _new = {}
   for (key in _default) {
     if (typeof _default[key] == 'object') {
@@ -13,6 +13,17 @@ module.exports.merge = function(_default, _custom) {
       }
     }
   }
+  for (key in _custom) {
+    if (_new[key] == undefined) _new[key] = _custom[key]
+  }
 
   return _new
+}
+
+module.exports.logerr = function(message) {
+  throw new Error(message)
+}
+
+module.exports.logwarn = function() {
+  console.warn(message)
 }

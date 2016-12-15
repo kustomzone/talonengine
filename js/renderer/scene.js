@@ -33,13 +33,13 @@ const Scene = function(name, setupFunction) {
   scenes[name] = newScene
 
   // Setup root entity
-  let rootEntity = Entity._Instantiate('Root', function() {
-    this.component('Root')._init()
-    setupFunction.call(this)
+  let rootEntity = Entity._Instantiate('__Root', setupFunction, function() {
+    this._id = 'root'
+    this._parent['root'] = this
+    scenes[name]._rootEntity[this._id] = this
+
+    this.component('__Root')._init()
   })
-  rootEntity._id = 'root'
-  rootEntity._parent['root'] = rootEntity
-  scenes[name]._rootEntity[rootEntity._id] = rootEntity
 }
 
 // Set current scene

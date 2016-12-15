@@ -6,4 +6,4 @@
 
 const Entity = require('../entity.js')
 
-Entity('Root', ['Root'])
+Entity('__Root', ['__Root'])

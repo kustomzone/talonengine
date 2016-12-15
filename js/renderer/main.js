@@ -25,8 +25,10 @@ Talon.Scene = require('./scene.js')
 
 // Include standard assets
 require('./components/root.js')
-require('./entities/root.js')
 require('./components/renderer.js')
+require('./components/transform.js')
+
+require('./entities/root.js')
 
 // Requiring main user file
 require(Talon._options.realScript)
