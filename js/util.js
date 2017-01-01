@@ -3,18 +3,43 @@ module.exports.merge = function(_default, _custom) {
 
   let _new = {}
   for (key in _default) {
+    const _customDescriptor = Object.getOwnPropertyDescriptor(_custom, key)
+    const _defaultDescriptor = Object.getOwnPropertyDescriptor(_default, key)
     if (typeof _default[key] == 'object') {
-      _new[key] = module.exports.merge(_default[key], _custom[key])
-    } else {
+      if (_customDescriptor != undefined && (_customDescriptor.get != undefined || _customDescriptor.set != undefined)) {
+        Object.defineProperty(_new, key, _customDescriptor)
+      }
+      else {
+        if (_defaultDescriptor.get != undefined || _defaultDescriptor.set != undefined) {
+          Object.defineProperty(_new, key, _defaultDescriptor)
+        }
+        else _new[key] = module.exports.merge(_default[key], _custom[key])
+      }
+    }
+    else {
       if (_custom[key] != undefined) {
-        _new[key] = _custom[key]
-      } else {
-        _new[key] = _default[key]
+        Object.defineProperty(_new, key, _customDescriptor)
+      }
+      else {
+        Object.defineProperty(_new, key, _defaultDescriptor)
       }
     }
   }
   for (key in _custom) {
-    if (_new[key] == undefined) _new[key] = _custom[key]
+    if (_new[key] == undefined) {
+      const _customDescriptor = Object.getOwnPropertyDescriptor(_custom, key)
+      if (typeof _custom[key] == 'object') {
+        if (_customDescriptor != undefined && (_customDescriptor.get != undefined || _customDescriptor.set != undefined)) {
+          Object.defineProperty(_new, key, _customDescriptor)
+        }
+        else {
+          _new[key] = module.exports.merge(_custom[key])
+        }
+      }
+      else {
+        Object.defineProperty(_new, key, _customDescriptor)
+      }
+    }
   }
 
   return _new

@@ -23,14 +23,8 @@ const defaultEntity = {
   // Parent-child paradigm
   _parent: {},
   _children: {},
-  add: function(name, id, setupFunction) {
-    const parent = this
-    let newChild = Entity._Instantiate(name, setupFunction, function() {
-      // Assign the parent of the newChild
-      parent._children[id] = this
-      parent._children[id]._id = id
-      parent._children[id]._parent[parent._id] = parent
-    })
+  add: function(name, id, params, setupFunction) {
+    Entity._Instantiate(name, id, this, params, setupFunction)
   },
   remove: function(id) {
     _children[id] = undefined
@@ -41,7 +35,7 @@ const defaultEntity = {
 const Entity = function(name, componentNames) {
   componentNames.push('Transform')
 
-  let newEntity = util.merge(defaultEntity, {})
+  let newEntity = util.merge(defaultEntity)
   for (let i = 0; i < componentNames.length; i++) {
     newEntity._components[componentNames[i]] = Component._Instantiate(componentNames[i])
   }
@@ -49,18 +43,35 @@ const Entity = function(name, componentNames) {
   entities[name] = newEntity
 }
 
-Entity._Instantiate = function(name, setupFunction, _presetupFunction) {
-  let newEntity = util.merge(entities[name], {})
+Entity._Instantiate = function(name, id, parent, params, setupFunction) {
+  let newEntity = util.merge(entities[name])
 
+  // Assigning common variables
   for (key in newEntity._components) {
     // Assign to 'entity' attribute of all components
     newEntity._components[key].entity = newEntity
-    // Assign to 'static' attribute of all components
-    newEntity._components[key].static = entities[name]._components[key].static
+    newEntity._components[key].transform = newEntity.component('Transform')
+    // Assign to '_static' attribute of all components
+    newEntity._components[key]._static = entities[name]._components[key]._static
   }
 
-  // PERHAPS CAN ADD AN INIT() AND A FIRSTUPDATE()
-  _presetupFunction.call(newEntity)
+  // Assign the parent of the newChild
+  newEntity._id = id
+  if (parent == null) {
+    newEntity._parent[newEntity._id] = newEntity
+  }
+  else {
+    parent._children[id] = newEntity
+    newEntity._parent[parent._id] = parent
+  }
+
+  // TODO make this a single input method
+  for (key in params) {
+    // params[key] is the dict of the component attributes
+    for (let key2 in params[key]) {
+      newEntity._components[key][key2] = params[key][key2]
+    }
+  }
 
   for (key in newEntity._components) {
     // Call init function of all the components
@@ -68,7 +79,8 @@ Entity._Instantiate = function(name, setupFunction, _presetupFunction) {
   }
 
   // Setup should come after _init()
-  setupFunction.call(newEntity)
+  if (setupFunction != undefined) setupFunction.call(newEntity)
+  // END TODO
 
   return newEntity
 }

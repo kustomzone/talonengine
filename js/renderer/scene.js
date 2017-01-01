@@ -28,17 +28,14 @@ const defaultScene = {
 }
 
 // Main Scene function
-const Scene = function(name, setupFunction) {
+const Scene = function(name, params, setupFunction) {
   let newScene = util.merge(defaultScene, {})
   scenes[name] = newScene
 
   // Setup root entity
-  let rootEntity = Entity._Instantiate('__Root', setupFunction, function() {
-    this._id = 'root'
-    this._parent['root'] = this
-    scenes[name]._rootEntity[this._id] = this
-
-    this.component('__Root')._init()
+  let rootEntity = Entity._Instantiate('__Root', 'root', null, params, function() {
+    this.add('Camera', 'defaultCamera', {})
+    setupFunction.call(this)
   })
 }
 

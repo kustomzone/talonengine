@@ -1,7 +1,7 @@
 Doc for Talon.Component instance
 
 VARS
-static -> array of static variables to be stored in Component class
+_static -> array of _static variables to be stored in Component class
 entity -> entity object that this component belongs to
 
 FUNCTIONS

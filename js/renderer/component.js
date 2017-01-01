@@ -10,9 +10,8 @@ const util = require('../util.js')
 // Global components array
 const components = {}
 
-// Default Component object
 const defaultComponent = {
-  static: {},
+  _static: {},
   entity: null,
   init: function() {},
   update: function() {},
@@ -24,13 +23,18 @@ const defaultComponent = {
   }
 }
 
-// Main Component function
+/**
+  * @function module:Talon - Renderer process.Component
+  * @param {string} name - The name of the component being created.
+  * @param {string} component - The implementation of the component.
+  * @instance
+*/
 const Component = function(name, component) {
   components[name] = util.merge(defaultComponent, component)
 }
 
 Component._Instantiate = function(name) {
-  let newComponent = util.merge(components[name], {})
+  let newComponent = util.merge(components[name])
   return newComponent
 }
 

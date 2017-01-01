@@ -11,5 +11,5 @@
 # Completed
 
 Change Talon.Scene setup function to that of root entity (DONE)
-Check if Component.static works (DONE)
+Check if Component._static works (DONE)
 Update docs for Talon modules (Docs currently only for objects) (DONE)
