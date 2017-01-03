@@ -1,4 +1,0 @@
-Doc for util module
-
-FUNCTIONS
-merge(_default, _custom) -> combines two jsobjects

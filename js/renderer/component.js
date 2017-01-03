@@ -23,12 +23,7 @@ const defaultComponent = {
   }
 }
 
-/**
-  * @function module:Talon - Renderer process.Component
-  * @param {string} name - The name of the component being created.
-  * @param {string} component - The implementation of the component.
-  * @instance
-*/
+// Main Component function
 const Component = function(name, component) {
   components[name] = util.merge(defaultComponent, component)
 }

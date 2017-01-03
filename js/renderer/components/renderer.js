@@ -75,6 +75,10 @@ Component('Renderer', {
 
       this.centerAnchorPoint()
     }
+    else {
+      // Use svg from external file with id 'this.mesh'
+
+    }
   },
   get mesh() {
     return this._mesh

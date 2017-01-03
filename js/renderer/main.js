@@ -9,7 +9,7 @@ const {app, ipcRenderer} = require('electron')
 const path = require('path')
 
 
-/** @module Talon - Renderer process */
+// Global Talon object
 const Talon = {}
 module.exports = Talon
 
