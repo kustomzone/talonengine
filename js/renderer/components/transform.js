@@ -32,7 +32,7 @@ Component('Transform', {
   // Getters and Setters
   set localPosition(value) {
     this._localPosition = value
-    if (this._parentTransform == undefined) this._parentTransform = this.entity._parent[Object.keys(this.entity._parent)[0]].component('Transform')
+    if (this._parentTransform == undefined) this._parentTransform = this.entity.parent.component('Transform')
     if (this._isRoot == undefined) this._isRoot = this.entity._id == 'root'
     if (this._isRoot == true) this._position = this.localPosition
     else {
@@ -48,7 +48,7 @@ Component('Transform', {
   },
   set localRotation(value) {
     this._localRotation = value
-    if (this._parentTransform == undefined) this._parentTransform = this.entity._parent[Object.keys(this.entity._parent)[0]].component('Transform')
+    if (this._parentTransform == undefined) this._parentTransform = this.entity.parent.component('Transform')
     if (this._isRoot == undefined) this._isRoot = this.entity._id == 'root'
     if (this._isRoot == true) this._rotation = this.localRotation
     else this._rotation = this._parentTransform.rotation + this.localRotation
@@ -59,7 +59,7 @@ Component('Transform', {
   },
   set localScale(value) {
     this._localScale = value
-    if (this._parentTransform == undefined) this._parentTransform = this.entity._parent[Object.keys(this.entity._parent)[0]].component('Transform')
+    if (this._parentTransform == undefined) this._parentTransform = this.entity.parent.component('Transform')
     if (this._isRoot == undefined) this._isRoot = this.entity._id == 'root'
     if (this._isRoot == true) this._scale = this.localScale
     else this._scale = { x: this._parentTransform.scale.x * this.localScale.x, y: this._parentTransform.scale.y * this.localScale.y }
@@ -70,7 +70,7 @@ Component('Transform', {
   },
   set position(value) {
     this._position = value
-    if (this._parentTransform == undefined) this._parentTransform = this.entity._parent[Object.keys(this.entity._parent)[0]].component('Transform')
+    if (this._parentTransform == undefined) this._parentTransform = this.entity.parent.component('Transform')
     if (this._isRoot == undefined) this._isRoot = this.entity._id == 'root'
     if (this._isRoot == true) this._localPosition = this.position
     else {
@@ -88,7 +88,7 @@ Component('Transform', {
   },
   set rotation(value) {
     this._rotation = value
-    if (this._parentTransform == undefined) this._parentTransform = this.entity._parent[Object.keys(this.entity._parent)[0]].component('Transform')
+    if (this._parentTransform == undefined) this._parentTransform = this.entity.parent.component('Transform')
     if (this._isRoot == undefined) this._isRoot = this.entity._id == 'root'
     if (this._isRoot == true) this._localRotation = this.rotation
     else this._localRotation = this.rotation - this._parentTransform.rotation
@@ -99,7 +99,7 @@ Component('Transform', {
   },
   set scale(value) {
     this._scale = value
-    if (this._parentTransform == undefined) this._parentTransform = this.entity._parent[Object.keys(this.entity._parent)[0]].component('Transform')
+    if (this._parentTransform == undefined) this._parentTransform = this.entity.parent.component('Transform')
     if (this._isRoot == undefined) this._isRoot = this.entity._id == 'root'
     if (this._isRoot == true) this._localScale = this.scale
     else this._localScale = { x: this.scale.x / this._parentTransform.scale.x, y: this.scale.y / this._parentTransform.scale.y }

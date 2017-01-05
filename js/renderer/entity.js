@@ -13,16 +13,26 @@ const entities = {}
 
 // Default Entity object
 const defaultEntity = {
-  // Unique id for each entity
-  _id: null,
-  // Entity-component paradigm
-  _components: {},
+  _id: null, // Unique id for each entity
+  _components: {}, // Entity-component paradigm
+  _parent: null, // Parent-child paradigm
+  _children: {}, // Parent-child paradigm
+
+  // Getters and setters
+  get id() {
+    return this._id
+  },
+  get parent() {
+    return this._parent
+  },
+  get children() {
+    return this._children
+  },
+
+  // Methods
   component: function(name) {
     return this._components[name]
   },
-  // Parent-child paradigm
-  _parent: {},
-  _children: {},
   add: function(name, id, params, setupFunction) {
     Entity._Instantiate(name, id, this, params, setupFunction)
   },
@@ -58,11 +68,11 @@ Entity._Instantiate = function(name, id, parent, params, setupFunction) {
   // Assign the parent of the newChild
   newEntity._id = id
   if (parent == null) {
-    newEntity._parent[newEntity._id] = newEntity
+    newEntity._parent = newEntity
   }
   else {
     parent._children[id] = newEntity
-    newEntity._parent[parent._id] = parent
+    newEntity._parent = parent
   }
 
   // TODO make this a single input method
