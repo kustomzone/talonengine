@@ -12,10 +12,10 @@ Component('__Root', {
   },
   update: function() {
     const _update = function(entity) {
-      for (key in entity._components) {
+      for (let key in entity._components) {
         if (key != '__Root') entity._components[key]._update()
       }
-      for (key in entity._children) {
+      for (let key in entity._children) {
         _update(entity._children[key])
       }
     }

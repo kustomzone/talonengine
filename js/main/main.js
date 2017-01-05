@@ -50,7 +50,7 @@ Talon._createWindow = function(options) {
   // Creating window
   Talon._window = new BrowserWindow({ width: options.width, height: options.width / options.aspect, resizable: options.resizable })
   Talon._window.loadURL(url.format({
-    pathname: path.join(__dirname, '../../html/build.html'),
+    pathname: path.join(__dirname, '../../html/main.html'),
     protocol: 'file:',
     slashes: true
   }))

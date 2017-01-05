@@ -47,7 +47,7 @@ Entity._Instantiate = function(name, id, parent, params, setupFunction) {
   let newEntity = util.merge(entities[name])
 
   // Assigning common variables
-  for (key in newEntity._components) {
+  for (let key in newEntity._components) {
     // Assign to 'entity' attribute of all components
     newEntity._components[key].entity = newEntity
     newEntity._components[key].transform = newEntity.component('Transform')
@@ -66,14 +66,15 @@ Entity._Instantiate = function(name, id, parent, params, setupFunction) {
   }
 
   // TODO make this a single input method
-  for (key in params) {
+
+  for (let key in params) {
     // params[key] is the dict of the component attributes
     for (let key2 in params[key]) {
       newEntity._components[key][key2] = params[key][key2]
     }
   }
 
-  for (key in newEntity._components) {
+  for (let key in newEntity._components) {
     // Call init function of all the components
     newEntity._components[key]._init()
   }

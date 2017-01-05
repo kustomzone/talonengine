@@ -4,15 +4,13 @@
 // Renderer (built-in component)
 'use strict'
 
-const Component = require('../component.js')
-const fs = require('fs')
+const Talon = require('talonengine')
 
-Component('Renderer', {
+Talon.Component('Renderer', {
 
   // Default attributes
   _mesh: 'defaultRectangle 100 100 white black 1',
   anchorPoint: { x: 0, y: 0 },
-  _centerAnchorPoint: {},
 
 
   // Override
@@ -23,6 +21,7 @@ Component('Renderer', {
     mainGroup.appendChild(this._elem)
   },
   update: function() {
+    console.log(this.anchorPoint)
     const transformString = this._generateTransformString()
     this._elem.setAttribute('transform', transformString)
   },
@@ -34,7 +33,7 @@ Component('Renderer', {
     if (this.mesh.startsWith('default')) {
       const stringArr = this.mesh.split(' ')
 
-      if (this._elem == undefined) {
+      if (this._elem == undefined || this._elem.nodeName != 'path') {
         this._elem = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
         // Setting default attributes
@@ -48,19 +47,17 @@ Component('Renderer', {
         // Rectangle & Circle
 
         // More default attributes
-        let width = 100
-        let height = 100
+        this._width = 100
+        this._height = 100
 
         if (stringArr.length >= 2) {
-          width = parseInt(stringArr[1])
-          if (stringArr.length >= 3) height = parseInt(stringArr[2])
-          else height = parseInt(stringArr[1])
+          this._width = parseInt(stringArr[1])
+          if (stringArr.length >= 3) this._height = parseInt(stringArr[2])
+          else this._height = parseInt(stringArr[1])
         }
 
-        this._centerAnchorPoint = { x: width / 2, y: height / 2 }
-
-        if (this.mesh.startsWith('defaultRectangle')) this._elem.setAttribute('d', 'M0 0 ' + 'L' + width + ' 0 ' + 'L' + width + ' ' + height + ' ' + 'L0 ' + height + ' Z')
-        else this._elem.setAttribute('d', 'M0 ' + (height / 2) + ' a' + (width / 2) + ' ' + (height / 2) + ' 0 1 0 ' + width + ' 0 a' + (width / 2) + ' ' + (height / 2) + ' 0 1 0 -' + width + ' 0')
+        if (this.mesh.startsWith('defaultRectangle')) this._elem.setAttribute('d', 'M0 0 ' + 'L' + this._width + ' 0 ' + 'L' + this._width + ' ' + this._height + ' ' + 'L0 ' + this._height + ' Z')
+        else this._elem.setAttribute('d', 'M0 ' + (this._height / 2) + ' a' + (this._width / 2) + ' ' + (this._height / 2) + ' 0 1 0 ' + this._width + ' 0 a' + (this._width / 2) + ' ' + (this._height / 2) + ' 0 1 0 -' + this._width + ' 0')
 
         if (stringArr.length >= 4) {
           this._elem.setAttribute('fill', stringArr[3])
@@ -72,12 +69,34 @@ Component('Renderer', {
           }
         }
       }
-
-      this.centerAnchorPoint()
     }
     else {
       // Use svg from external file with id 'this.mesh'
+      if (this._elem == undefined || this._elem.nodeName != 'use') {
+        this._elem = document.createElementNS('http://www.w3.org/2000/svg', 'use')
+      }
 
+      const stringArr = this.mesh.split(' ')
+
+      const resources = Talon._options.realResources
+      let foundSvg = false
+      for (let key in resources) {
+        const resource = Talon._options.realResources[key]
+        if (resource.endsWith(stringArr[0] + '.svg')) {
+          foundSvg = true
+          this._elem.setAttributeNS('http://www.w3.org/1999/xlink', 'href', resource + '#' + stringArr[0])
+          break
+        }
+      }
+      if (foundSvg == false) {
+        // Handle resource not found error
+      }
+
+      if (stringArr.length >= 2) {
+        this._width = parseInt(stringArr[1])
+        if (stringArr.length >= 3) this._height = parseInt(stringArr[2])
+        else this._height = parseInt(stringArr[1])
+      }
     }
   },
   get mesh() {
@@ -85,27 +104,24 @@ Component('Renderer', {
   },
 
   // Methods
-  centerAnchorPoint: function() {
-    this.anchorPoint = this._centerAnchorPoint
-  },
   _generateTransformString: function() {
     let transformString = ''
 
     // Translating
     transformString += 'translate('
-    transformString += (this.transform.position.x - this.anchorPoint.x) + ', ' + (this.transform.position.y - this.anchorPoint.y) + ') '
+    transformString += (this.transform.position.x - this._width * this.anchorPoint.x) + ', ' + (this.transform.position.y - this._height * this.anchorPoint.y) + ') '
 
     // Rotating
     transformString += 'rotate('
-    transformString += this.transform.rotation + ', ' + this.anchorPoint.x + ', ' + this.anchorPoint.y + ') '
+    transformString += this.transform.rotation + ', ' + this._width * this.anchorPoint.x + ', ' + this._height * this.anchorPoint.y + ') '
 
     // Scaling
     transformString += 'translate('
-    transformString += this.anchorPoint.x + ', ' + this.anchorPoint.y + ') '
+    transformString += this._width * this.anchorPoint.x + ', ' + this._height * this.anchorPoint.y + ') '
     transformString += 'scale('
     transformString += this.transform.scale.x + ', ' + this.transform.scale.y + ') '
     transformString += 'translate('
-    transformString += -this.anchorPoint.x + ', ' + -this.anchorPoint.y + ') '
+    transformString += -this._width * this.anchorPoint.x + ', ' + -this._height * this.anchorPoint.y + ') '
 
     return transformString
   }

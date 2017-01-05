@@ -21,7 +21,7 @@ const defaultScene = {
       let string = tier + ' '
       for (let i = 0; i < tier; i++) string += '\t'
       console.log(string + entity._id)
-      for (key in entity._children) _printHierachy(tier + 1, entity._children[key])
+      for (let key in entity._children) _printHierachy(tier + 1, entity._children[key])
     }
     _printHierachy(0, this._rootEntity['root'])
   }

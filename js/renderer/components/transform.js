@@ -112,7 +112,7 @@ Component('Transform', {
 
   // Methods
   _updateChildren: function() {
-    for (key in this.entity._children) {
+    for (let key in this.entity._children) {
       const childTransform = this.entity._children[key].component('Transform')
       childTransform.localPosition = childTransform.localPosition
       childTransform.localRotation = childTransform.localRotation
