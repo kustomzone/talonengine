@@ -1,12 +1,13 @@
-// entity.js
+// Entity.js
 // 5 November 2016
 // Ravern Koh
 // Talon.Entity
 'use strict'
 
 // Importing Component module
-const Component = require('./component.js')
-const util = require('../util.js')
+const Talon = require('talonengine')
+const Component = Talon.Component
+const util = Talon._util
 
 // Global entities array
 const entities = {}
@@ -17,6 +18,7 @@ const defaultEntity = {
   _components: {}, // Entity-component paradigm
   _parent: null, // Parent-child paradigm
   _children: {}, // Parent-child paradigm
+  _scene: null, // Scene the entity belongs to
 
   // Getters and setters
   get id() {
@@ -54,15 +56,16 @@ const Entity = function(name, componentNames) {
 }
 
 Entity._Instantiate = function(name, id, parent, params, setupFunction) {
-  let newEntity = util.merge(entities[name])
+  let newEntity = util.merge(entities[name], {}, ['_static'])
 
   // Assigning common variables
   for (let key in newEntity._components) {
     // Assign to 'entity' attribute of all components
     newEntity._components[key].entity = newEntity
-    newEntity._components[key].transform = newEntity.component('Transform')
     // Assign to '_static' attribute of all components
     newEntity._components[key]._static = entities[name]._components[key]._static
+    // Assign to 'transform' attribute of all components
+    newEntity._components[key].transform = newEntity.component('Transform')
   }
 
   // Assign the parent of the newChild
@@ -72,15 +75,19 @@ Entity._Instantiate = function(name, id, parent, params, setupFunction) {
   }
   else {
     parent._children[id] = newEntity
+    newEntity._scene = parent._scene
     newEntity._parent = parent
   }
 
   // TODO make this a single input method
-
-  for (let key in params) {
-    // params[key] is the dict of the component attributes
-    for (let key2 in params[key]) {
-      newEntity._components[key][key2] = params[key][key2]
+  for (let key in newEntity._components) {
+    const component = newEntity._components[key]
+    for (let compKey in component) {
+      if (params[key] != undefined && params[key][compKey] != undefined) {
+        component[compKey] = params[key][compKey]
+      } else {
+        component[compKey] = component[compKey]
+      }
     }
   }
 

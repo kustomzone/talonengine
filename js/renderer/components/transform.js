@@ -1,12 +1,12 @@
-// transform.js
+// Transform.js
 // 13 November 2016
 // Ravern Koh
 // Transform (default component)
 'use strict'
 
-const Component = require('../component.js')
+const Talon = require('talonengine')
 
-Component('Transform', {
+Talon.Component('Transform', {
 
   // Default attributes
   // Local

@@ -1,4 +1,4 @@
-// camera.js
+// Camera.js
 // 22 December 2016
 // Ravern Koh
 // Camera (built-in component)
@@ -6,12 +6,11 @@
 
 const Talon = require('talonengine')
 
-const Component = require('../component.js')
-
-Component('Camera', {
+Talon.Component('Camera', {
 
   // Default attributes
   _backgroundColor: 'white',
+  _letterboxColor: 'black',
 
 
   // Override
@@ -26,7 +25,8 @@ Component('Camera', {
   update: function() {
     if (this._static.activeCamera == this.entity) {
       // Set background color
-      this._background.setAttribute('fill', this.backgroundColor)
+      this.backgroundColor = this.backgroundColor
+      this.letterboxColor = this.letterboxColor
 
       // Moving mainGroup to simulate camera
       const transformString = this._generateTransformString()
@@ -38,10 +38,18 @@ Component('Camera', {
   // Getters and setters
   set backgroundColor(value) {
     this._backgroundColor = value
-    this._background.setAttribute('fill', this.backgroundColor)
+    if (this._background != undefined) this._background.setAttribute('fill', this.backgroundColor)
   },
   get backgroundColor() {
     return this._backgroundColor
+  },
+  set letterboxColor(value) {
+    this._letterboxColor = value
+    if (document.getElementById('leftRect') != undefined) document.getElementById('leftRect').setAttribute('fill', this._letterboxColor)
+    if (document.getElementById('rightRect') != undefined) document.getElementById('rightRect').setAttribute('fill', this._letterboxColor)
+  },
+  get letterboxColor() {
+    return this._letterboxColor
   },
 
 

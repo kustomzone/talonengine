@@ -17,20 +17,26 @@ module.exports = Talon
 // Init code, loading '_options'/configuration
 Talon._options = ipcRenderer.sendSync('start')
 
+// Add in black box
+require('./screen.js')
 
 // Requiring Talon submodules
-Talon.Component = require('./component.js')
-Talon.Entity = require('./entity.js')
-Talon.Scene = require('./scene.js')
+Talon._util = require('../util.js')
+Talon.Component = require('./Component.js')
+Talon.Entity = require('./Entity.js')
+Talon.Scene = require('./Scene.js')
+
 
 // Include standard assets
-require('./components/root.js')
-require('./components/transform.js')
-require('./components/camera.js')
-require('./components/renderer.js')
+require('./components/Root.js')
+require('./components/Transform.js')
+require('./components/Camera.js')
+require('./components/Renderer.js')
+require('./components/AudioPlayer.js')
+require('./components/Collider.js')
 
-require('./entities/root.js')
-require('./entities/camera.js')
+require('./entities/Root.js')
+require('./entities/DefaultCamera.js')
 
 // Requiring main user file
 require(Talon._options.realScript)

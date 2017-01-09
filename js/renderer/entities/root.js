@@ -1,9 +1,9 @@
-// root.js
+// Root.js
 // 12 November 2016
 // Ravern Koh
 // RootEntity
 'use strict'
 
-const Entity = require('../entity.js')
+const Talon = require('talonengine')
 
-Entity('__Root', ['__Root'])
+Talon.Entity('__Root', ['__Root'])

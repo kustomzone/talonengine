@@ -1,4 +1,4 @@
-// renderer.js
+// Renderer.js
 // 13 November 2016
 // Ravern Koh
 // Renderer (built-in component)
@@ -15,15 +15,12 @@ Talon.Component('Renderer', {
 
   // Override
   init: function() {
-    this.mesh = this.mesh
-
     const mainGroup = document.getElementById('mainGroup')
     mainGroup.appendChild(this._elem)
   },
   update: function() {
-    console.log(this.anchorPoint)
     const transformString = this._generateTransformString()
-    this._elem.setAttribute('transform', transformString)
+    this._elem.setAttributeNS(null, 'transform', transformString)
   },
 
 
@@ -37,9 +34,9 @@ Talon.Component('Renderer', {
         this._elem = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
         // Setting default attributes
-        this._elem.setAttribute('fill', 'white')
-        this._elem.setAttribute('stroke', 'black')
-        this._elem.setAttribute('stroke-width', '1')
+        this._elem.setAttributeNS(null, 'fill', 'white')
+        this._elem.setAttributeNS(null, 'stroke', 'black')
+        this._elem.setAttributeNS(null, 'stroke-width', '1')
       }
 
       // Set _centerAnchorPoint in here
@@ -56,15 +53,15 @@ Talon.Component('Renderer', {
           else this._height = parseInt(stringArr[1])
         }
 
-        if (this.mesh.startsWith('defaultRectangle')) this._elem.setAttribute('d', 'M0 0 ' + 'L' + this._width + ' 0 ' + 'L' + this._width + ' ' + this._height + ' ' + 'L0 ' + this._height + ' Z')
-        else this._elem.setAttribute('d', 'M0 ' + (this._height / 2) + ' a' + (this._width / 2) + ' ' + (this._height / 2) + ' 0 1 0 ' + this._width + ' 0 a' + (this._width / 2) + ' ' + (this._height / 2) + ' 0 1 0 -' + this._width + ' 0')
+        if (this.mesh.startsWith('defaultRectangle')) this._elem.setAttributeNS(null, 'd', 'M0 0 ' + 'L' + this._width + ' 0 ' + 'L' + this._width + ' ' + this._height + ' ' + 'L0 ' + this._height + ' Z')
+        else this._elem.setAttributeNS(null, 'd', 'M0 ' + (this._height / 2) + ' a' + (this._width / 2) + ' ' + (this._height / 2) + ' 0 1 0 ' + this._width + ' 0 a' + (this._width / 2) + ' ' + (this._height / 2) + ' 0 1 0 -' + this._width + ' 0')
 
         if (stringArr.length >= 4) {
-          this._elem.setAttribute('fill', stringArr[3])
+          this._elem.setAttributeNS(null, 'fill', stringArr[3])
           if (stringArr.length >= 5) {
-            this._elem.setAttribute('stroke', stringArr[4])
+            this._elem.setAttributeNS(null, 'stroke', stringArr[4])
             if (stringArr.length >= 6) {
-              this._elem.setAttribute('stroke-width', stringArr[5])
+              this._elem.setAttributeNS(null, 'stroke-width', stringArr[5])
             }
           }
         }
@@ -81,7 +78,7 @@ Talon.Component('Renderer', {
       const resources = Talon._options.realResources
       let foundSvg = false
       for (let key in resources) {
-        const resource = Talon._options.realResources[key]
+        const resource = resources[key]
         if (resource.endsWith(stringArr[0] + '.svg')) {
           foundSvg = true
           this._elem.setAttributeNS('http://www.w3.org/1999/xlink', 'href', resource + '#' + stringArr[0])

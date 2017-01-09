@@ -1,12 +1,13 @@
-// scene.js
+// Scene.js
 // 5 November 2016
 // Ravern Koh
 // Talon.Scene
 'use strict'
 
 // Importing entity files
-const Entity = require('./entity.js')
-const util = require('../util.js')
+const Talon = require('talonengine')
+const Entity = Talon.Entity
+const util = Talon._util
 
 // Global scenes array
 let currentSceneName = ''
@@ -14,16 +15,16 @@ const scenes = {}
 
 // Default scene object
 const defaultScene = {
-  _rootEntity: {},
+  _rootEntity: null,
   // Debug functions
   printHierachy: function() {
     const _printHierachy = function(tier, entity) {
-      let string = tier + ' '
+      let string = ''
       for (let i = 0; i < tier; i++) string += '\t'
-      console.log(string + entity._id)
-      for (let key in entity._children) _printHierachy(tier + 1, entity._children[key])
+      console.log(string + tier + '\t' + entity.id)
+      for (let key in entity.children) _printHierachy(tier + 1, entity.children[key])
     }
-    _printHierachy(0, this._rootEntity['root'])
+    _printHierachy(0, this._rootEntity)
   }
 }
 
@@ -34,9 +35,11 @@ const Scene = function(name, params, setupFunction) {
 
   // Setup root entity
   let rootEntity = Entity._Instantiate('__Root', 'root', null, params, function() {
-    this.add('Camera', 'defaultCamera', {})
+    this._scene = newScene
+    this.add('DefaultCamera', 'defaultCamera', {})
     setupFunction.call(this)
   })
+  newScene._rootEntity = rootEntity
 }
 
 // Set current scene

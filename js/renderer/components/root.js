@@ -1,12 +1,12 @@
-// root.js
+// Root.js
 // 12 November 2016
 // Ravern Koh
 // Root (default component)
 'use strict'
 
-const Component = require('../component.js')
+const Talon = require('talonengine')
 
-Component('__Root', {
+Talon.Component('__Root', {
   init: function() {
     setInterval(this._update.bind(this), 1000 / 60)
   },
