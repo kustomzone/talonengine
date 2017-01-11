@@ -11,6 +11,7 @@ Talon.Component('__Root', {
     setInterval(this._update.bind(this), 1000 / 60)
   },
   update: function() {
+    Talon.Time._update()
     const _update = function(entity) {
       for (let key in entity._components) {
         if (key != '__Root') entity._components[key]._update()

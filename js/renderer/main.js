@@ -25,6 +25,8 @@ Talon._util = require('../util.js')
 Talon.Component = require('./Component.js')
 Talon.Entity = require('./Entity.js')
 Talon.Scene = require('./Scene.js')
+Talon.Time = require('./Time.js')
+Talon.Input = require('./Input.js')
 
 
 // Include standard assets
