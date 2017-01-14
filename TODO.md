@@ -9,6 +9,7 @@
 3. Do up "before setup" and "after setup" functions
 4. Find a way to auto calculate bounding boxes for external SVGs
 5. Upgrade AudioPlayer to WebAudio API
+6. Collider updateLocalPoints gets called twice cuz two setters (Optimization)
 
 # Completed
 

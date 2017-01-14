@@ -85,7 +85,8 @@ Entity._Instantiate = function(name, id, parent, params, setupFunction) {
     for (let compKey in component) {
       if (params[key] != undefined && params[key][compKey] != undefined) {
         component[compKey] = params[key][compKey]
-      } else {
+      }
+else {
         component[compKey] = component[compKey]
       }
     }

@@ -27,10 +27,9 @@ Talon.Component('Renderer', {
   // Getters and setters
   set mesh(value) {
     this._mesh = value
+    const stringArr = this.mesh.split(' ')
     if (this.mesh.startsWith('default')) {
-      const stringArr = this.mesh.split(' ')
-
-      if (this._elem == undefined || this._elem.nodeName != 'path') {
+      if (this._elem == undefined || this._elem.tagName != 'path') {
         this._elem = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
         // Setting default attributes
@@ -69,11 +68,9 @@ Talon.Component('Renderer', {
     }
     else {
       // Use svg from external file with id 'this.mesh'
-      if (this._elem == undefined || this._elem.nodeName != 'use') {
+      if (this._elem == undefined || this._elem.tagName != 'use') {
         this._elem = document.createElementNS('http://www.w3.org/2000/svg', 'use')
       }
-
-      const stringArr = this.mesh.split(' ')
 
       const resources = Talon._options.realResources
       let foundSvg = false

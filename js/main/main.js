@@ -32,13 +32,13 @@ Talon.configure = function(options) {
   Talon._options.realScript = path.dirname(require.main.filename) + '/' + Talon._options.script
   // Set CWD + resource name in realResources
   Talon._options.realResources = []
-  for (let i in Talon._options.resources) {
+  for (let i = 0; i < Talon._options.resources.length; i++) {
     Talon._options.realResources.push(path.dirname(require.main.filename) + '/' + Talon._options.resources[i])
   }
 }
 Talon._options = {
   script: 'index.js',
-  svgDirectories: ['.'],
+  resources: [],
   window: {
     width: 800,
     aspect: 4 / 3,

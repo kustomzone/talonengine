@@ -23,6 +23,10 @@ Talon.Component('Collider', {
   _mesh: 'defaultRectangle 100 100',
   _colliding: {},
   _anchorPoint: { x: 0.5, y: 0.5 },
+  _localPoints: [],
+  _points: [],
+  _shapeIndices: [],
+  _curShapeIndex: 0,
 
   // Override
   init: function() {
@@ -71,12 +75,14 @@ Talon.Component('Collider', {
   // Methods
   updateLocalPoints: function() {
     // Updates local points according to mesh and anchorPoint
-    if (this.mesh == 'auto') {
-      // Load mesh from Renderer
-    } else if (this.mesh.startsWith('default')) {
+    // Check if mesh is auto, if auto, take renderer mesh and use as own, without changing this.mesh
+    this._localPoints = []
+    let mesh = (this.mesh == 'auto') ? this.entity.component('Renderer').mesh : this.mesh
+    const stringArr = mesh.split(' ')
+
+    if (mesh.startsWith('default')) {
       // Load as primitive collider
-      const stringArr = this.mesh.split(' ')
-      if (this.mesh.startsWith('defaultRectangle') || this.mesh.startsWith('defaultEllipse')) {
+      if (mesh.startsWith('defaultRectangle') || mesh.startsWith('defaultEllipse')) {
         // Rectangle & Circle
 
         // More default attributes
@@ -89,14 +95,16 @@ Talon.Component('Collider', {
           else this._height = parseInt(stringArr[1])
         }
 
-        if (this.mesh.startsWith('defaultRectangle')) {
+        if (mesh.startsWith('defaultRectangle')) {
           this._localPoints = [
             { x: -this._width * this.anchorPoint.x, y: -this._height * this.anchorPoint.y },
             { x: this._width * (1 - this.anchorPoint.x), y: -this._height * this.anchorPoint.y },
             { x: this._width * (1 - this.anchorPoint.x), y: this._height * (1 - this.anchorPoint.y) },
             { x: -this._width * this.anchorPoint.x, y: this._height * (1 - this.anchorPoint.y) }
           ]
-        } else {
+          this._shapeIndices = [ 0, 0, 0, 0 ]
+        }
+        else {
           let precision = 8
           // Do ellipse loading
           if (stringArr.length >= 4) {
@@ -116,37 +124,121 @@ Talon.Component('Collider', {
             return point
           }
 
-          this._localPoints = []
           for (let rot = 0; rot < Math.PI * 2; rot += Math.PI * 2 / precision) {
             this._localPoints.push(getEllipsePoint(rot, this))
+            this._shapeIndices.push(0)
           }
         }
       }
-    } else if (this.mesh.length > 0) {
-      // Load as mesh collider
-    } else {
-      // Error
+    }
+    else {
+      // Load as collider for renderer
+      const resources = Talon._options.realResources
+      let foundSvg = false
+      for (let key in resources) {
+        const resource = resources[key]
+        if (resource.endsWith(stringArr[0] + '.svg')) {
+          foundSvg = true
+          const elem = document.createElement('object')
+          elem.setAttribute('data', resource)
+          document.documentElement.appendChild(elem)
+          // When SVG loads into object
+          const self = this
+          elem.addEventListener('load', function() {
+            load.call(self)
+          })
+          const load = function() {
+            // Load path from SVG
+            const elemDocument = elem.contentDocument
+            const svgElem = elemDocument.getElementById(stringArr[0])
+
+            const loadNodes = function(elem) {
+              for (let i = 0; i < elem.children.length; i++) {
+                const child = elem.children[i]
+                const tag = child.tagName
+                if (tag == 'g') {
+                  loadNodes.call(this, child)
+                }
+                else {
+                  // Do loading of paths or primitives here
+                  if (tag == 'rect') {
+                    // Get attributes here
+                    const x = parseFloat(child.getAttribute('x'))
+                    const y = parseFloat(child.getAttribute('y'))
+                    const width = parseFloat(child.getAttribute('width'))
+                    const height = parseFloat(child.getAttribute('height'))
+                    let transform = child.getAttribute('transform')
+                    const fill = child.getAttribute('fill')
+
+                    // Get points before transformation
+                    const points = [
+                      { x: x, y: y },
+                      { x: x + width, y: y },
+                      { x: x + width, y: y + height },
+                      { x: x, y: y + height },
+                    ]
+
+                    // Get matrix
+                    const matrix = []
+                    transform = transform.substr(0, transform.length - 1).substr(7)
+                    const elemArr = transform.split(' ')
+                    for (let i = 0; i < 9; i++) matrix.push(0)
+                    matrix[0] = parseFloat(elemArr[0]); matrix[1] = parseFloat(elemArr[2]); matrix[2] = parseFloat(elemArr[4]); matrix[3] = parseFloat(elemArr[1]); matrix[4] = parseFloat(elemArr[3]); matrix[5] = parseFloat(elemArr[5]); matrix[8] = 1
+
+                    // Applies the matrix to the point
+                    const applyMat = function(point, matrix) {
+                      const x = matrix[0] * point.x + matrix[1] * point.y + matrix[2]
+                      const y = matrix[3] * point.x + matrix[4] * point.y + matrix[5]
+                      return { x: x, y: y }
+                    }
+                    for (let i = 0; i < points.length; i++) {
+                      points[i] = applyMat(points[i], matrix)
+                      this._localPoints.push(points[i])
+                      this._shapeIndices.push(this._curShapeIndex)
+                    }
+
+                    this._curShapeIndex++
+                  }
+                  else if (tag == 'polygon') {
+                    
+                  }
+                }
+              }
+            }
+
+            // Start to load children of SVG
+            loadNodes.call(this, svgElem)
+
+            document.documentElement.removeChild(elem)
+          }
+          break
+        }
+      }
+      if (foundSvg == false) {
+        // Handle resource not found error
+
+      }
     }
   },
   updatePoints: function() {
-    const rotate = function(point, self) {
+    const rotate = function(point) {
       let newPoint = {}
-      const rot = self.transform.rotation
+      const rot = this.transform.rotation
       newPoint.x = point.x * Math.cos(rot * Math.PI / 180) - point.y * Math.sin(rot * Math.PI / 180)
       newPoint.y = point.y * Math.cos(rot * Math.PI / 180) + point.x * Math.sin(rot * Math.PI / 180)
       return newPoint
     }
-    const scale = function(point, self) {
+    const scale = function(point) {
       // Assumes origin is anchor point
       let newPoint = {}
-      const scale = self.transform.scale
+      const scale = this.transform.scale
       newPoint.x = point.x * scale.x
       newPoint.y = point.y * scale.y
       return newPoint
     }
-    const translate = function(point, self) {
+    const translate = function(point) {
       let newPoint = {}
-      const trans = self.transform.position
+      const trans = this.transform.position
       newPoint.x = point.x + trans.x
       newPoint.y = point.y + trans.y
       return newPoint
@@ -157,7 +249,7 @@ Talon.Component('Collider', {
     const height = this._height
     let points = []
     for (var i = 0; i < localPoints.length; i++) {
-      let point = translate(scale(rotate(localPoints[i], this), this), this)
+      let point = translate.call(this, scale.call(this, rotate.call(this, localPoints[i])))
       points.push(point)
     }
   }

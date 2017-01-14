@@ -50,7 +50,8 @@ Talon.Component('AudioPlayer', {
       for (let key in this._elems) {
         this._elems[key].load()
       }
-    } else {
+    }
+    else {
       for (let key in this._elems) {
         const elem = this._elems[key]
         if (elem.src.endsWith(sound + '.wav')) {

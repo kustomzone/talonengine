@@ -34,7 +34,8 @@ const screen = function() {
     leftRect.setAttribute('d', 'M0 0 ' + 'L' + rectWidth + ' 0 ' + 'L' + rectWidth + ' ' + winHeight + ' ' + 'L0 ' + winHeight + ' Z')
     rightRect.setAttribute('d', 'M' + (winWidth - rectWidth) + ' 0 ' + 'L' + winWidth + ' 0 ' + 'L' + winWidth + ' ' + winHeight + ' ' + 'L' + (winWidth - rectWidth) + ' ' + winHeight + ' Z')
     document.getElementById('windowScaleGroup').setAttribute('transform', 'translate(' + rectWidth + ', 0) scale(' + scale + ', ' + scale + ')')
-  } else {
+  }
+else {
     // Too tall
     scale = winWidth / gameWidth
     const rectHeight = (winHeight - gameHeight * scale) / 2

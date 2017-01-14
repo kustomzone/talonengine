@@ -40,6 +40,20 @@ const Scene = function(name, params, setupFunction) {
     setupFunction.call(this)
   })
   newScene._rootEntity = rootEntity
+
+  // Create scene loop
+  setInterval(function() {
+    Talon.Time._update()
+    const _update = function(entity) {
+      for (let key in entity._components) {
+        entity._components[key]._update()
+      }
+      for (let key in entity._children) {
+        _update(entity._children[key])
+      }
+    }
+    _update(rootEntity)
+  }, 0)
 }
 
 // Set current scene
