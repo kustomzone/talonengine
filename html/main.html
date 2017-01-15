@@ -2,6 +2,10 @@
 
 <div id="audios"></div>
 
+<script id="vertex" type="glsl"></script>
+<script id="fragment" type="glsl"></script>
+<script> document.getElementById('vertex').text = require('fs').readFileSync(__dirname + '/shader.vert'); document.getElementById('fragment').text = require('fs').readFileSync(__dirname + '/shader.frag') </script>
+
 <script>require('../js/renderer/main.js')</script>
 
 <style>

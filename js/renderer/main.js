@@ -18,7 +18,7 @@ module.exports = Talon
 Talon._options = ipcRenderer.sendSync('start')
 
 // Add in black box
-// require('./screen.js')
+require('./screen.js')
 
 // Requiring Talon submodules
 Talon._util = require('../util.js')
