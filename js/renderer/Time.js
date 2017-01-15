@@ -7,11 +7,11 @@
 const Time = {}
 module.exports = Time
 
-let prevTime = Date.now()
+let prevTime = window.performance.now()
 let deltaTime = 0
 
 Time._update = function() {
-  const nowTime = Date.now()
+  const nowTime = window.performance.now()
   deltaTime = (nowTime - prevTime) / 1000
   prevTime = nowTime
 }

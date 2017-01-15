@@ -30,14 +30,17 @@ Talon.Component('Renderer', {
     const gl = this._static.gl
 
     // Keeps track of which Renderer instance is first or last
+    if (this._static.renderCount == 0) {
+      gl.clear(gl.COLOR_BUFFER_BIT)
+    }
     this._static.renderCount++
-    if (this._static.renderCount == 0) gl.clear(gl.COLOR_BUFFER_BIT)
 
     // Renders from the buffer
     const program = gl.getParameter(gl.CURRENT_PROGRAM)
     const attribLocation = gl.getAttribLocation(program, 'position')
     const uniformLocation = gl.getUniformLocation(program, 'transform')
-    gl.uniformMatrix3fv(uniformLocation, false, new Float32Array([ 1, 0, 0, 0, 1, 0, 100, 100, 1 ]))
+    this.awd = this.awd == undefined ? 0 : this.awd + 200 * Talon.Time.delta()
+    gl.uniformMatrix3fv(uniformLocation, false, new Float32Array([ 2, 0, 0, 0, 2, 0, 1000 - this.awd, 600 - this.awd, 1 ]))
     gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
     gl.vertexAttribPointer(attribLocation, 2, gl.FLOAT, false, 0, 0)
     gl.drawArrays(gl.TRIANGLES, 0, this._localPoints.length / 2)
@@ -100,8 +103,6 @@ Talon.Component('Renderer', {
         // Set uniforms
         const resUniformLocation = gl.getUniformLocation(program, 'resolution')
         gl.uniform2f(resUniformLocation, Talon._options.window.width, Talon._options.window.width / Talon._options.window.aspect)
-        const dpcUniformLocation = gl.getUniformLocation(program, 'devicePixelRatio')
-        gl.uniform1f(dpcUniformLocation, window.devicePixelRatio)
       }
 
       createProgram()
@@ -117,7 +118,7 @@ Talon.Component('Renderer', {
     const attribLocation = gl.getAttribLocation(gl.getParameter(gl.CURRENT_PROGRAM), 'position')
     this._buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.DYNAMIC_DRAW)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.STATIC_DRAW)
     gl.enableVertexAttribArray(attribLocation)
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
   },
