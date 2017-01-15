@@ -9,9 +9,11 @@ const Talon = require('talonengine')
 Talon.Component('Renderer', {
 
   // Default attributes
-  _mesh: 'defaultRectangle 100 100 white black 1',
-  anchorPoint: { x: 0, y: 0 },
+  _mesh: 'defaultRectangle 100 100 white',
+  _anchorPoint: { x: 0, y: 0 },
   _localPoints: [],
+  // this._width
+  // this._height
   // this._buffer
   // this._static.renderCount
   // this._static.maxRenderCount
@@ -102,6 +104,10 @@ Talon.Component('Renderer', {
         // Set uniforms
         const resUniformLocation = gl.getUniformLocation(program, 'resolution')
         gl.uniform2f(resUniformLocation, Talon._options.window.width, Talon._options.window.width / Talon._options.window.aspect)
+
+        // Enable position attribute
+        const attribLocation = gl.getAttribLocation(program, 'position')
+        gl.enableVertexAttribArray(attribLocation)
       }
 
       createProgram()
@@ -109,19 +115,50 @@ Talon.Component('Renderer', {
 
     // Load in vertices
     const stringArr = this._mesh.split(' ')
-    this._localPoints = [ 0, 0, 0, 100, 100, 100, 0, 0, 100, 0, 100, 100 ]
+
+    let width = 100
+    let height = 100
+
+    if (stringArr.length >= 2) {
+      width = parseInt(stringArr[1])
+      if (stringArr.length >= 3) height = parseInt(stringArr[2])
+    }
+
+    this._width = width
+    this._height = height
+
+    // TEMP
+    this._localPoints = [ 0, 0, 0, height, width, height, 0, 0, width, 0, width, height ]
 
     // Convenience var
     const gl = this._static.gl
 
-    const attribLocation = gl.getAttribLocation(gl.getParameter(gl.CURRENT_PROGRAM), 'position')
     this._buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.STATIC_DRAW)
-    gl.enableVertexAttribArray(attribLocation)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.DYNAMIC_DRAW)
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
   },
   get mesh() {
     return this._mesh
+  },
+  set anchorPoint(value) {
+    const prevAnchorPoint = this.anchorPoint
+    this._anchorPoint = value
+
+    // Iterate through all and change points
+    for (let i = 0; i < this._localPoints.length; i++) {
+      if (i % 2 == 0) this._localPoints[i] = this._localPoints[i] - (this.anchorPoint.x - prevAnchorPoint.x) * this._width
+      else this._localPoints[i] = this._localPoints[i] - (this.anchorPoint.y - prevAnchorPoint.y) * this._height
+    }
+
+    // Convenience var
+    const gl = this._static.gl
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.DYNAMIC_DRAW)
+    gl.bindBuffer(gl.ARRAY_BUFFER, null)
+  },
+  get anchorPoint() {
+    return this._anchorPoint
   }
 })

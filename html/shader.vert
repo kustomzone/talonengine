@@ -10,6 +10,7 @@ void main() {
   pos = vec2(position3f.x, position3f.y);
 
   vec2 finalPosition = (pos / resolution) * 2.0 - 1.0;
+  finalPosition.y *= -1.0;
 
   gl_Position = vec4(finalPosition, 0.0, 1.0);
 }
