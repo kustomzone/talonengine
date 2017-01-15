@@ -4,5 +4,6 @@
 4. No external APIs
   - Audio: HTML `<audio>` tag
   - Networking: `WebSockets` api
-  - Graphics: SVG
+  - Graphics: WebGL
   - Collision & Physics: Self-coded
+5. 1 matrix needs to be stored in Camera. This will also multiply its scale by devicePixelRatio

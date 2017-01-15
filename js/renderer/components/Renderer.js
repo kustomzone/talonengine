@@ -12,17 +12,39 @@ Talon.Component('Renderer', {
   // Default attributes
   _mesh: 'defaultRectangle 100 100 white black 1',
   anchorPoint: { x: 0, y: 0 },
+  _localPoints: [],
+  // this._buffer
+  // this._static.renderCount
+  // this._static.maxRenderCount
+  // this._static.gl
+  // this._static.notFirst
 
 
   // Override
   init: function() {
-
+    this._static.renderCount = 0
+    this._static.maxRenderCount++
   },
   update: function() {
     // Convenience var
     const gl = this._static.gl
-    gl.clear(gl.COLOR_BUFFER_BIT)
-    gl.drawArrays(gl.TRIANGLES, 0, 3)
+
+    // Keeps track of which Renderer instance is first or last
+    this._static.renderCount++
+    if (this._static.renderCount == 0) gl.clear(gl.COLOR_BUFFER_BIT)
+
+    // Renders from the buffer
+    const program = gl.getParameter(gl.CURRENT_PROGRAM)
+    const attribLocation = gl.getAttribLocation(program, 'position')
+    const uniformLocation = gl.getUniformLocation(program, 'transform')
+    gl.uniformMatrix3fv(uniformLocation, false, new Float32Array([ 1, 0, 0, 0, 1, 0, 100, 100, 1 ]))
+    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
+    gl.vertexAttribPointer(attribLocation, 2, gl.FLOAT, false, 0, 0)
+    gl.drawArrays(gl.TRIANGLES, 0, this._localPoints.length / 2)
+    gl.bindBuffer(gl.ARRAY_BUFFER, null)
+
+    // Reset render count
+    if (this._static.renderCount == this._static.maxRenderCount) this._static.renderCount = 0
   },
 
 
@@ -31,12 +53,12 @@ Talon.Component('Renderer', {
     this._mesh = value
     if (this._static.notFirst == undefined) {
       this._static.notFirst = true
+      this._static.maxRenderCount = 0
       // Do setup code
       const canvas = document.getElementById('canvas')
       this._static.gl = canvas.getContext('webgl')
       // Convenience var
       const gl = this._static.gl
-      gl.clearColor(0, 0, 0, 1)
 
       const createProgram = function() {
         const createShader = function(type, source) {
@@ -74,20 +96,29 @@ Talon.Component('Renderer', {
         const program = createProgram(vert, frag)
 
         gl.useProgram(program)
+
+        // Set uniforms
+        const resUniformLocation = gl.getUniformLocation(program, 'resolution')
+        gl.uniform2f(resUniformLocation, Talon._options.window.width, Talon._options.window.width / Talon._options.window.aspect)
+        const dpcUniformLocation = gl.getUniformLocation(program, 'devicePixelRatio')
+        gl.uniform1f(dpcUniformLocation, window.devicePixelRatio)
       }
 
       createProgram()
     }
 
+    // Load in vertices
+    const stringArr = this._mesh.split(' ')
+    this._localPoints = [ 0, 0, 0, 100, 100, 100, 0, 0, 100, 0, 100, 100 ]
+
     // Convenience var
     const gl = this._static.gl
 
-    const attribLocation = gl.getAttribLocation(gl.getParameter(gl.CURRENT_PROGRAM), 'a_position')
-    const posBuff = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, posBuff)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ -1, -1, -1, 1, 1, 1 ]), gl.STATIC_DRAW)
+    const attribLocation = gl.getAttribLocation(gl.getParameter(gl.CURRENT_PROGRAM), 'position')
+    this._buffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.DYNAMIC_DRAW)
     gl.enableVertexAttribArray(attribLocation)
-    gl.vertexAttribPointer(attribLocation, 2, gl.FLOAT, false, 0, 0)
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
   },
   get mesh() {

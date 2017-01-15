@@ -1,10 +1,18 @@
-// an attribute will receive data from a buffer
-attribute vec4 a_position;
+attribute vec2 position;
 
-// all shaders have a main function
+uniform float devicePixelRatio;
+uniform vec2 resolution;
+uniform mat3 transform;
+
 void main() {
+  vec2 pos = position;
 
-  // gl_Position is a special variable a vertex shader
-  // is responsible for setting
-  gl_Position = a_position;
+  vec3 position3f = transform * vec3(pos, 1.0);
+  pos = vec2(position3f.x, position3f.y);
+
+  vec2 finalPosition = vec2(pos.x / resolution.x, 1.0 - pos.y / resolution.y);
+  finalPosition = finalPosition * 2.0;
+  finalPosition = finalPosition - 1.0;
+
+  gl_Position = vec4(finalPosition, 0.0, 1.0);
 }
