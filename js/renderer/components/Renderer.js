@@ -5,7 +5,6 @@
 'use strict'
 
 const Talon = require('talonengine')
-const fs = require('fs')
 
 Talon.Component('Renderer', {
 
@@ -39,8 +38,8 @@ Talon.Component('Renderer', {
     const program = gl.getParameter(gl.CURRENT_PROGRAM)
     const attribLocation = gl.getAttribLocation(program, 'position')
     const uniformLocation = gl.getUniformLocation(program, 'transform')
-    this.awd = this.awd == undefined ? 0 : this.awd + 200 * Talon.Time.delta()
-    gl.uniformMatrix3fv(uniformLocation, false, new Float32Array([ 2, 0, 0, 0, 2, 0, 1000 - this.awd, 600 - this.awd, 1 ]))
+    this.counter = this.counter == undefined ? 0 : this.counter + 1
+    gl.uniformMatrix3fv(uniformLocation, false, new Float32Array(Talon.math.transformMatrix(this.transform.position, this.transform.rotation, this.transform.scale)))
     gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
     gl.vertexAttribPointer(attribLocation, 2, gl.FLOAT, false, 0, 0)
     gl.drawArrays(gl.TRIANGLES, 0, this._localPoints.length / 2)

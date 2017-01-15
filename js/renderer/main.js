@@ -22,6 +22,7 @@ require('./screen.js')
 
 // Requiring Talon submodules
 Talon._util = require('../util.js')
+Talon.math = require('../math.js')
 Talon.Component = require('./Component.js')
 Talon.Entity = require('./Entity.js')
 Talon.Scene = require('./Scene.js')
