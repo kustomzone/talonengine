@@ -6,4 +6,4 @@
 
 const Talon = require('talonengine')
 
-Talon.Entity('DefaultCamera', ['Camera'])
+Talon.Entity('DefaultCamera', ['Renderer', 'Camera'])

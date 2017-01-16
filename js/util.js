@@ -105,6 +105,46 @@ module.exports.merge = function(_default, custom, doNotCopyList) {
   return _new
 }
 
+module.exports.color = function(colorStr) {
+  let color = []
+
+  let found = true
+
+  // Check for prebuilt colors
+  switch(colorStr) {
+    case 'black':
+      color = [ 0, 0, 0, 1 ]
+      break
+    case 'white':
+      color = [ 1, 1, 1, 1 ]
+      break
+    case 'red':
+      color = [ 1, 0, 0, 1 ]
+      break
+    case 'green':
+      color = [ 0, 1, 0, 1 ]
+      break
+    case 'blue':
+      color = [ 0, 0, 1, 1 ]
+      break
+    case 'magenta':
+      color = [ 1, 0, 1, 1 ]
+      break
+    case 'clear':
+      color = [ 0, 0, 0, 0 ]
+      break
+    default:
+      found = false
+  }
+
+  if (!found) {
+    // Load as hex color
+    
+  }
+
+  return color
+}
+
 module.exports.logerr = function(message) {
   throw new Error(message)
 }

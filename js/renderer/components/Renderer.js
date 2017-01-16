@@ -9,12 +9,14 @@ const Talon = require('talonengine')
 Talon.Component('Renderer', {
 
   // Default attributes
-  _mesh: 'defaultRectangle 100 100 white',
+  _mesh: 'defaultRectangle 100 100 red',
   _anchorPoint: { x: 0, y: 0 },
-  _localPoints: [],
   // this._width
   // this._height
-  // this._buffer
+  _shapes: [],
+  // shape.fill
+  // shape.vertices
+  // shape.buffer
   // this._static.renderCount
   // this._static.maxRenderCount
   // this._static.gl
@@ -36,19 +38,28 @@ Talon.Component('Renderer', {
     }
     this._static.renderCount++
 
-    // Renders from the buffer
+    // Get current program
     const program = gl.getParameter(gl.CURRENT_PROGRAM)
-    const attribLocation = gl.getAttribLocation(program, 'position')
-    const uniformLocation = gl.getUniformLocation(program, 'transform')
-    this.counter = this.counter == undefined ? 0 : this.counter + 1
-    gl.uniformMatrix3fv(uniformLocation, false, new Float32Array(Talon.math.transformMatrix(this.transform.position, this.transform.rotation, this.transform.scale)))
-    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.vertexAttribPointer(attribLocation, 2, gl.FLOAT, false, 0, 0)
-    gl.drawArrays(gl.TRIANGLES, 0, this._localPoints.length / 2)
-    gl.bindBuffer(gl.ARRAY_BUFFER, null)
+    // Transform all vertices from all shapes in this using this.transform info
+    const transformUniformLocation = gl.getUniformLocation(program, 'uTransform')
+    gl.uniformMatrix3fv(transformUniformLocation, false, new Float32Array(Talon.math.transformMatrix(this.transform.position, this.transform.rotation, this.transform.scale)))
+
+    // Renders the vertices from shape.buffer
+    for (let i = 0; i < this._shapes.length; i++) {
+      const shape = this._shapes[i]
+
+      const posAttribLocation = gl.getAttribLocation(program, 'aPosition')
+      const colorUniformLocation = gl.getUniformLocation(program, 'uColor')
+      const color = Talon._util.color(shape.fill)
+      gl.uniform4f(colorUniformLocation, color[0], color[1], color[2], color[3])
+      gl.bindBuffer(gl.ARRAY_BUFFER, shape.buffer)
+      gl.vertexAttribPointer(posAttribLocation, 2, gl.FLOAT, false, 0, 0)
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, shape.vertices.length / 2)
+      gl.bindBuffer(gl.ARRAY_BUFFER, null)
+    }
 
     // Reset render count
-    if (this._static.renderCount == this._static.maxRenderCount) this._static.renderCount = 0
+    if (this._static.renderCount >= this._static.maxRenderCount) this._static.renderCount = 0
   },
 
 
@@ -102,11 +113,11 @@ Talon.Component('Renderer', {
         gl.useProgram(program)
 
         // Set uniforms
-        const resUniformLocation = gl.getUniformLocation(program, 'resolution')
+        const resUniformLocation = gl.getUniformLocation(program, 'uResolution')
         gl.uniform2f(resUniformLocation, Talon._options.window.width, Talon._options.window.width / Talon._options.window.aspect)
 
         // Enable position attribute
-        const attribLocation = gl.getAttribLocation(program, 'position')
+        const attribLocation = gl.getAttribLocation(program, 'aPosition')
         gl.enableVertexAttribArray(attribLocation)
       }
 
@@ -127,16 +138,33 @@ Talon.Component('Renderer', {
     this._width = width
     this._height = height
 
-    // TEMP
-    this._localPoints = [ 0, 0, 0, height, width, height, 0, 0, width, 0, width, height ]
-
     // Convenience var
     const gl = this._static.gl
 
-    this._buffer = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.DYNAMIC_DRAW)
-    gl.bindBuffer(gl.ARRAY_BUFFER, null)
+    // TEMP
+    if (stringArr[0].startsWith('default')) {
+      const shape = {}
+
+      let fill = 'white'
+      if (stringArr.length >= 4) fill = stringArr[3]
+
+      shape.fill = fill
+
+      // Rectangle
+      if (stringArr[0].startsWith('defaultRectangle')) shape.vertices = [ 0, 0, 0, height, width, 0, width, height ]
+      else if (stringArr[0].startsWith('defaultEllipse')) {
+        
+      } else {
+        console.log('Unrecognized mesh format')
+      }
+
+      shape.buffer = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, shape.buffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(shape.vertices), gl.DYNAMIC_DRAW)
+      gl.bindBuffer(gl.ARRAY_BUFFER, null)
+
+      this._shapes.push(shape)
+    }
   },
   get mesh() {
     return this._mesh
@@ -146,17 +174,22 @@ Talon.Component('Renderer', {
     this._anchorPoint = value
 
     // Iterate through all and change points
-    for (let i = 0; i < this._localPoints.length; i++) {
-      if (i % 2 == 0) this._localPoints[i] = this._localPoints[i] - (this.anchorPoint.x - prevAnchorPoint.x) * this._width
-      else this._localPoints[i] = this._localPoints[i] - (this.anchorPoint.y - prevAnchorPoint.y) * this._height
+    for (let j = 0; j < this._shapes.length; j++) {
+      const shape = this._shapes[j]
+
+      // Change shape vertices
+      for (let i = 0; i < shape.vertices.length; i++) {
+        if (i % 2 == 0) shape.vertices[i] = shape.vertices[i] - (this.anchorPoint.x - prevAnchorPoint.x) * this._width
+        else shape.vertices[i] = shape.vertices[i] - (this.anchorPoint.y - prevAnchorPoint.y) * this._height
+      }
+
+      // Convenience var
+      const gl = this._static.gl
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, shape.buffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(shape.vertices), gl.DYNAMIC_DRAW)
+      gl.bindBuffer(gl.ARRAY_BUFFER, null)
     }
-
-    // Convenience var
-    const gl = this._static.gl
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._localPoints), gl.DYNAMIC_DRAW)
-    gl.bindBuffer(gl.ARRAY_BUFFER, null)
   },
   get anchorPoint() {
     return this._anchorPoint

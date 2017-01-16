@@ -28,11 +28,11 @@ const defaultComponent = {
 
 // Main Component function
 const Component = function(name, component) {
-  components[name] = util.merge(defaultComponent, component, ['_static'])
+  components[name] = util.merge(defaultComponent, component)
 }
 
 Component._Instantiate = function(name) {
-  let newComponent = util.merge(components[name], ['_static'])
+  let newComponent = util.merge(components[name], {}, [ '_static' ])
   return newComponent
 }
 

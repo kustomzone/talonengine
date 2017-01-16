@@ -6,4 +6,9 @@
   - Networking: `WebSockets` api
   - Graphics: WebGL
   - Collision & Physics: Self-coded
-5. 1 matrix needs to be stored in Camera. This will also multiply its scale by devicePixelRatio
+5. 1 matrix needs to be stored in Camera
+6. Order of attributes declared in component object matter e.g:
+  `_attrib1 = 3
+  _attrib2 = 4`
+  Setter of attrib1 will be called before attrib2
+  *NOTE*: Order of setter declaration matter in the same way
